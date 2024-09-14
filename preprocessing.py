@@ -52,125 +52,128 @@ def prescaler(X_train, X_test, scaler='MinMax'):
     return X_train_scaled, X_test_scaled
     
     
-data_path='./data'
-X,Y = get_dataset(data_path)
 
 
-#print("First 5 elements of Dataset:", X[:5],Y[:5])
+if __name__ == '__main__':
+    data_path='./data'
+    X,Y = get_dataset(data_path)
 
 
-#Split Training/Test
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=42)
-
-#Preprocessing
-X_train_scaled, X_test_scaled = prescaler(X_train, X_test, scaler='MinMax')
-print(X)
-
-models =Models()
-rf = models.RandomForest()
-svm = models.SVM()
+    #print("First 5 elements of Dataset:", X[:5],Y[:5])
 
 
-#Training
-rf.fit(X_train, Y_train)
-svm.fit(X_train, Y_train)
+    #Split Training/Test
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=42)
+
+    #Preprocessing
+    X_train_scaled, X_test_scaled = prescaler(X_train, X_test, scaler='MinMax')
+    print(X)
+
+    models =Models()
+    rf = models.RandomForest()
+    svm = models.SVM()
 
 
-##Evaluation
-rf_pred = rf.predict(X_test)
-rf_classification_report = classification_report(Y_test, rf_pred)
-rf_confusion_matrix = confusion_matrix(Y_test, rf_pred)
-print("RandomForest classification report: \n", rf_classification_report)
-print("RandomForest confusion matrix: \n", rf_confusion_matrix)
+    #Training
+    rf.fit(X_train, Y_train)
+    svm.fit(X_train, Y_train)
 
 
-svm_pred = svm.predict(X_test)
-svm_classification_report = classification_report(Y_test, svm_pred)
-svm_confusion_matrix = confusion_matrix(Y_test, svm_pred)
-print("SVM classification report: \n", svm_classification_report)
-print("SVM confusion matrix: \n", svm_confusion_matrix)
+    ##Evaluation
+    rf_pred = rf.predict(X_test)
+    rf_classification_report = classification_report(Y_test, rf_pred)
+    rf_confusion_matrix = confusion_matrix(Y_test, rf_pred)
+    print("RandomForest classification report: \n", rf_classification_report)
+    print("RandomForest confusion matrix: \n", rf_confusion_matrix)
+
+
+    svm_pred = svm.predict(X_test)
+    svm_classification_report = classification_report(Y_test, svm_pred)
+    svm_confusion_matrix = confusion_matrix(Y_test, svm_pred)
+    print("SVM classification report: \n", svm_classification_report)
+    print("SVM confusion matrix: \n", svm_confusion_matrix)
 
 
 
 
 
 
-#models = Models(n_timesteps=dataset_RNN.shape[1],n_features=dataset_RNN.shape[2])
-#rf = models.RandomForest()
-#svm = models.SVM()
-#RNN = models.RNN()
-#
-##Training
-#rf.fit(X_train, Y_train)
-#svm.fit(X_train, Y_train)
-#
-#epochs = 50
-#RNN.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-#RNN.summary()
-#
-#test_block_index = -1
-#
-#X_RNN_test = dataset_RNN[test_block_index]
-#X_RNN_test = np.expand_dims(X_RNN_test, axis=0)
-#Y_RNN_test = labels_RNN[test_block_index]
-#Y_RNN_test = np.expand_dims(Y_RNN_test, axis=0)
-#
-#X_RNN_train = np.delete(dataset_RNN, test_block_index, axis=0)
-#Y_RNN_train = np.delete(labels_RNN, test_block_index, axis=0)
-#
-#print("X_RNN_test_shape", X_RNN_test.shape)
-#print("Y_RNN_test_shape", Y_RNN_test.shape)
-#print("X_RNN_train_shape", X_RNN_train.shape)
-#print("Y_RNN_train_shape", Y_RNN_train.shape)
-#
-#RNN.fit(X_RNN_train, Y_RNN_train, epochs=epochs, batch_size=1, verbose=1)
-#
-##Evaluation
-#rf_pred = rf.predict(X_test)
-#rf_classification_report = classification_report(Y_test, rf_pred)
-#rf_confusion_matrix = confusion_matrix(Y_test, rf_pred)
-#print("RandomForest classification report: \n", rf_classification_report)
-#print("RandomForest confusion matrix: \n", rf_confusion_matrix)
-#
-#
-#svm_pred = svm.predict(X_test)
-#svm_classification_report = classification_report(Y_test, svm_pred)
-#svm_confusion_matrix = confusion_matrix(Y_test, svm_pred)
-#print("SVM classification report: \n", svm_classification_report)
-#print("SVM confusion matrix: \n", svm_confusion_matrix)
-#
-#
-#RNN_pred = RNN.predict(X_RNN_test)
-#RNN_pred = RNN_pred.squeeze(axis=0) 
-#
-#timestep_index = 10
-#predictions_for_timestep = RNN_pred[timestep_index,:]  # Estrai le predizioni per il timestep 10
-#
-## Mostra alcune predizioni per il timestep specificato
-#print("Predizioni per il timestep {}:".format(timestep_index))
-#print(predictions_for_timestep)
-#
-#print("RNN_pred size:", RNN_pred.shape)
-#print( RNN_pred)
-#
-#
-#RNN_pred_binary = (RNN_pred > 0.5).astype(int)
-#Y_RNN_test_binary = Y_RNN_test.squeeze(axis=0)
-#
-#RNN_classification_report = classification_report(Y_RNN_test_binary, RNN_pred_binary)
-#RNN_confusion_matrix = confusion_matrix(Y_RNN_test_binary, RNN_pred_binary)
-#print("RNN classification report:\n", RNN_classification_report)
-#print("RNN confusion matrix:\n", RNN_confusion_matrix)
-#
-#loss_RNN,accuracy_RNN = RNN.evaluate(X_RNN_test, Y_RNN_test)
-#print("loss:", loss_RNN)
-#print("accuracy:", accuracy_RNN)
+    #models = Models(n_timesteps=dataset_RNN.shape[1],n_features=dataset_RNN.shape[2])
+    #rf = models.RandomForest()
+    #svm = models.SVM()
+    #RNN = models.RNN()
+    #
+    ##Training
+    #rf.fit(X_train, Y_train)
+    #svm.fit(X_train, Y_train)
+    #
+    #epochs = 50
+    #RNN.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    #RNN.summary()
+    #
+    #test_block_index = -1
+    #
+    #X_RNN_test = dataset_RNN[test_block_index]
+    #X_RNN_test = np.expand_dims(X_RNN_test, axis=0)
+    #Y_RNN_test = labels_RNN[test_block_index]
+    #Y_RNN_test = np.expand_dims(Y_RNN_test, axis=0)
+    #
+    #X_RNN_train = np.delete(dataset_RNN, test_block_index, axis=0)
+    #Y_RNN_train = np.delete(labels_RNN, test_block_index, axis=0)
+    #
+    #print("X_RNN_test_shape", X_RNN_test.shape)
+    #print("Y_RNN_test_shape", Y_RNN_test.shape)
+    #print("X_RNN_train_shape", X_RNN_train.shape)
+    #print("Y_RNN_train_shape", Y_RNN_train.shape)
+    #
+    #RNN.fit(X_RNN_train, Y_RNN_train, epochs=epochs, batch_size=1, verbose=1)
+    #
+    ##Evaluation
+    #rf_pred = rf.predict(X_test)
+    #rf_classification_report = classification_report(Y_test, rf_pred)
+    #rf_confusion_matrix = confusion_matrix(Y_test, rf_pred)
+    #print("RandomForest classification report: \n", rf_classification_report)
+    #print("RandomForest confusion matrix: \n", rf_confusion_matrix)
+    #
+    #
+    #svm_pred = svm.predict(X_test)
+    #svm_classification_report = classification_report(Y_test, svm_pred)
+    #svm_confusion_matrix = confusion_matrix(Y_test, svm_pred)
+    #print("SVM classification report: \n", svm_classification_report)
+    #print("SVM confusion matrix: \n", svm_confusion_matrix)
+    #
+    #
+    #RNN_pred = RNN.predict(X_RNN_test)
+    #RNN_pred = RNN_pred.squeeze(axis=0) 
+    #
+    #timestep_index = 10
+    #predictions_for_timestep = RNN_pred[timestep_index,:]  # Estrai le predizioni per il timestep 10
+    #
+    ## Mostra alcune predizioni per il timestep specificato
+    #print("Predizioni per il timestep {}:".format(timestep_index))
+    #print(predictions_for_timestep)
+    #
+    #print("RNN_pred size:", RNN_pred.shape)
+    #print( RNN_pred)
+    #
+    #
+    #RNN_pred_binary = (RNN_pred > 0.5).astype(int)
+    #Y_RNN_test_binary = Y_RNN_test.squeeze(axis=0)
+    #
+    #RNN_classification_report = classification_report(Y_RNN_test_binary, RNN_pred_binary)
+    #RNN_confusion_matrix = confusion_matrix(Y_RNN_test_binary, RNN_pred_binary)
+    #print("RNN classification report:\n", RNN_classification_report)
+    #print("RNN confusion matrix:\n", RNN_confusion_matrix)
+    #
+    #loss_RNN,accuracy_RNN = RNN.evaluate(X_RNN_test, Y_RNN_test)
+    #print("loss:", loss_RNN)
+    #print("accuracy:", accuracy_RNN)
 
 
-#K-Fold cross validation 
-# KF = KFold(n_splits=5, shuffle=True, random_state= 42)
-# scores_rf = cross_val_score(rf,X,Y, cv=KF)
-# print("scores Random Forest with K-Fold cross validation",scores_rf)
+    #K-Fold cross validation 
+    # KF = KFold(n_splits=5, shuffle=True, random_state= 42)
+    # scores_rf = cross_val_score(rf,X,Y, cv=KF)
+    # print("scores Random Forest with K-Fold cross validation",scores_rf)
 
-# scores_svm = cross_val_score(svm,X,Y, cv=KF)
-# print("scores SVM with K-Fold cross validation",scores_svm)
+    # scores_svm = cross_val_score(svm,X,Y, cv=KF)
+    # print("scores SVM with K-Fold cross validation",scores_svm)
