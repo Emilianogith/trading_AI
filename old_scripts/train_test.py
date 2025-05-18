@@ -11,6 +11,20 @@ from preprocessing import  get_dataset,prescaler
 from RNN_model import RNN
 from utils import *
 
+
+'''Hyperparameters:'''
+scaler='Std'
+train_test_split_size=0.3
+batch_size=16
+num_epochs=20
+gru_hidden_dim=256
+gru_num_layers=30
+learning_rate=0.0001
+wd_regularization=0.01
+
+
+
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using the device: {device}")
 
@@ -21,10 +35,10 @@ Y = torch.from_numpy(Y).float().unsqueeze(1)
 
 
 #Split Training/Test
-X_train, X_val_test, Y_train, Y_val_test = train_test_split(X, Y, test_size=0.3, random_state=42) #Tune the split size
+X_train, X_val_test, Y_train, Y_val_test = train_test_split(X, Y, test_size=train_test_split_size, random_state=42) #Tune the split size
 
 #Preprocessing
-X_train, X_val_test_scaled = prescaler(X_train, X_val_test, scaler='MinMax') # Possible tuning 'MinMax' or 'Std'
+X_train, X_val_test_scaled = prescaler(X_train, X_val_test, scaler=scaler) # Possible tuning 'MinMax' or 'Std'
 
 X_val, X_test, Y_val, Y_test = train_test_split(X_val_test_scaled, Y_val_test, test_size=0.5, random_state=42)
 
@@ -37,7 +51,6 @@ train_dataset = TensorDataset(X_train, Y_train)
 val_dataset = TensorDataset(X_val, Y_val)
 test_dataset = TensorDataset(X_test, Y_test)
 
-batch_size=32
 
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, pin_memory=True)
@@ -45,16 +58,15 @@ test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True, pin_
 
 
 model = RNN(input_size=36,
-            hidden_size=256,
-            num_layers=8, #Tune the num_layers of GRU
+            hidden_size=gru_hidden_dim,
+            num_layers=gru_num_layers, #Tune the num_layers of GRU
             include_attention=False).to(device)            #FIX THE ATTENTION MODULE AND PUT include_attention=True
 
 criterion = nn.BCELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.0001, weight_decay=0.01) #TUNE THIS
+optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=wd_regularization) #TUNE THIS
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 
 
-num_epochs = 20
 train_losses=[]
 val_losses=[]
 
@@ -153,7 +165,14 @@ torch.save(model.state_dict(), '/kaggle/working/model_weights.pth')
 
 # Save losses and epochs information
 training_info = {
+    'scaleer': scaler,
+    'train_test_split': train_test_split_size,
+    'batch_size': batch_size,
     'num_epochs': num_epochs,
+    'hidden_size': gru_hidden_dim,
+    'num_layers': gru_num_layers,
+    'learning_rate': learning_rate,
+    'weight_decay': wd_regularization,
     'train_losses': train_losses,
     'val_losses': val_losses
 }
