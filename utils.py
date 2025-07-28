@@ -89,4 +89,5 @@ def split_data():
     print("Datasets splitted.")
 
 if __name__ == "__main__":
-    split_data()
+    get_dataset(verbose=True)
+    # split_data()

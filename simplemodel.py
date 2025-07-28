@@ -100,8 +100,8 @@ class SimpleModel(LightningModule):
         #Preporcessing:
         ...
         
-        train_dataset = torch.load('./train_dataset.pt')
-        val_dataset = torch.load('./val_dataset.pt')
+        train_dataset = torch.load('./train_dataset.pt', map_location='cpu', weights_only=False)
+        val_dataset = torch.load('./val_dataset.pt', map_location='cpu', weights_only=False)
 
         train_loader = DataLoader(train_dataset, batch_size=self.BATCH_SIZE, shuffle=True, num_workers=4, persistent_workers=True) 
         val_loader   = DataLoader(val_dataset, batch_size=self.BATCH_SIZE, num_workers=4, persistent_workers=True)
