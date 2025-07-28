@@ -142,7 +142,7 @@ class SimpleModel(LightningModule):
         trainer.fit(self, train_loader, val_loader)
     
     def model_test(self, best_checkpoint):
-        test_dataset = torch.load('./test_dataset.pt')
+        test_dataset = torch.load('./test_dataset.pt', map_location='cpu', weights_only=False)
         test_loader  = DataLoader(test_dataset, batch_size=self.BATCH_SIZE, num_workers=4, persistent_workers=True)
 
         trainer = Trainer(logger=False)
