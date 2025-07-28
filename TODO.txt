@@ -1,0 +1,16 @@
+- pesi per esempi positivi nella loss function
+
+
+- architettura migliore
+
+
+- riduci overfitting su esempi negativi
+
+
+- servono piu esempi positivi
+
+
+- self-supervised learning 
+
+
+- pretarining con contarstive learning 
