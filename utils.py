@@ -67,28 +67,80 @@ def get_dataset(data_path, verbose = False):
     return X, Y
 
 
-def split_data():
+def split_data(split_mode = 'random'):
     data_path='./data'
     X,Y = get_dataset(data_path)
 
-    # Wrap into a dataset
-    dataset = TensorDataset(X, Y)
+    if split_mode == 'random':
+        # Wrap into a dataset
+        dataset = TensorDataset(X, Y)
 
-    # Define lengths for the splits
-    train_len = int(0.7 * len(dataset))
-    val_len   = int(0.15 * len(dataset))
-    test_len  = len(dataset) - train_len - val_len
+        # Define lengths for the splits
+        train_len = int(0.7 * len(dataset))
+        val_len   = int(0.15 * len(dataset))
+        test_len  = len(dataset) - train_len - val_len
 
-    # Split the dataset randomly
-    train_dataset, val_dataset, test_dataset = random_split(dataset, [train_len, val_len, test_len])
+        # Split the dataset randomly
+        train_dataset, val_dataset, test_dataset = random_split(dataset, [train_len, val_len, test_len])
 
-    torch.save(train_dataset, './train_dataset.pt')
-    torch.save(val_dataset, './val_dataset.pt')
-    torch.save(test_dataset, './test_dataset.pt')
+        torch.save(train_dataset, './train_dataset.pt')
+        torch.save(val_dataset, './val_dataset.pt')
+        torch.save(test_dataset, './test_dataset.pt')
 
-    print("Datasets splitted.")
+        print("Datasets splitted.")
+
+    elif split_mode == 'split_with_criteria':
+        # Identify positive and negative indices
+        positive_indices = (Y == 1).nonzero(as_tuple=True)[0]
+        negative_indices = (Y == 0).nonzero(as_tuple=True)[0]
+
+        # Shuffle indices
+        positive_indices = positive_indices[torch.randperm(len(positive_indices))]
+        negative_indices = negative_indices[torch.randperm(len(negative_indices))]
+
+        # Calculate desired split sizes
+        total_len = len(Y)
+        train_len = int(0.7 * total_len)
+        val_len = int(0.15 * total_len)
+        test_len = total_len - train_len - val_len
+
+        # Ensure ~50% of positives go into the train set
+        num_pos_train = len(positive_indices) // 2
+        train_pos = positive_indices[:num_pos_train]
+
+        # Fill train set with negatives
+        remaining_train_len = train_len - len(train_pos)
+        train_neg = negative_indices[:remaining_train_len]
+
+        # Remaining indices for val and test
+        remaining_pos = positive_indices[num_pos_train:]
+        remaining_neg = negative_indices[remaining_train_len:]
+
+        # Concatenate and shuffle val and test
+        remaining_indices = torch.cat([remaining_pos, remaining_neg])
+        remaining_indices = remaining_indices[torch.randperm(len(remaining_indices))]
+
+        val_indices = remaining_indices[:val_len]
+        test_indices = remaining_indices[val_len:]
+
+        # Combine train indices
+        train_indices = torch.cat([train_pos, train_neg])
+        train_indices = train_indices[torch.randperm(len(train_indices))]
+
+        # Build datasets
+        train_dataset = TensorDataset(X[train_indices], Y[train_indices])
+        val_dataset   = TensorDataset(X[val_indices], Y[val_indices])
+        test_dataset  = TensorDataset(X[test_indices], Y[test_indices])
+
+        # Save
+        torch.save(train_dataset, './train_dataset.pt')
+        torch.save(val_dataset, './val_dataset.pt')
+        torch.save(test_dataset, './test_dataset.pt')
+
+        print("Datasets split with at least 50% of positives in train.")
+
 
 if __name__ == "__main__":
     data_path='./data'
     get_dataset(data_path, verbose=True)
-    # split_data()
+    split_data(split_mode='split_with_criteria')
