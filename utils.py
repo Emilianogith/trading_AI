@@ -90,5 +90,5 @@ def split_data():
 
 if __name__ == "__main__":
     data_path='./data'
-    get_dataset(verbose=True)
+    get_dataset(data_path, verbose=True)
     # split_data()

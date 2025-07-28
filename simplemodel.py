@@ -15,13 +15,15 @@ class SimpleModel(LightningModule):
     BATCH_SIZE = 32
     NUM_EPOCHS =300
 
-    def __init__(self, input_dim = 36, hidden_dim_1=126, hidden_dim_2 = 126, output_dim = 1,  device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
+    def __init__(self, input_dim = 36, hidden_dim_1=246, hidden_dim_2 = 126, output_dim = 1,  device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
         super().__init__()
 
         # Architecture
         self.dense1 = nn.Linear(input_dim, hidden_dim_1, dtype =torch.float64)
-        self.dense2 = nn.Linear(hidden_dim_1, hidden_dim_2, dtype =torch.float64)
-        self.dense3 = nn.Linear(hidden_dim_2, output_dim, dtype =torch.float64)
+        self.dense2 = nn.Linear(hidden_dim_1, hidden_dim_1, dtype =torch.float64)
+        self.dense3 = nn.Linear(hidden_dim_1, hidden_dim_2, dtype =torch.float64)
+        self.dense4 = nn.Linear(hidden_dim_2, hidden_dim_2, dtype =torch.float64)
+        self.dense5 = nn.Linear(hidden_dim_2, output_dim, dtype =torch.float64)
 
         self.dropout = nn.Dropout(0.5)
         self.relu = nn.ReLU()
@@ -48,7 +50,11 @@ class SimpleModel(LightningModule):
         x = self.dropout(x)
         x = self.relu(self.dense2(x))
         x = self.dropout(x)
-        x = self.sigmoid(self.dense3(x))
+        x = self.relu(self.dense3(x))
+        x = self.dropout(x)
+        x = self.relu(self.dense4(x))
+        x = self.dropout(x)
+        x = self.sigmoid(self.dense5(x))
         return x
 
     def training_step(self, batch, batch_idx):
@@ -125,7 +131,7 @@ class SimpleModel(LightningModule):
         early_stop_callback = EarlyStopping(
             monitor="val_loss",
             min_delta=0.00,     # minimum change to qualify as improvement
-            patience=10,         # number of epochs with no improvement to wait
+            patience=20,         # number of epochs with no improvement to wait
             verbose=True,
             mode="min"
         )
