@@ -14,3 +14,7 @@
 
 
 - pretarining con contarstive learning 
+
+
+
+- scalare tra min e max nella finestra temporale di ingresso
