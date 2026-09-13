@@ -1,0 +1,6 @@
+batch_size: 32
+dropout: 0.5
+hidden_dim_1: 126
+hidden_dim_2: 126
+input_dim: 36
+lr: 0.001
